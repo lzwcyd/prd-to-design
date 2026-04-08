@@ -1,0 +1,25 @@
+SKILL.md
+  fc64ec64bfdd8e77 166
+templates/plan.md
+  fc64ec64bfdd8e77 46,98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "81de45f9be03e11faec7e67b7a93076ac84e2338",
+  "prompts": {
+    "fc64ec64bfdd8e77": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "69259af9-43ba-4cfe-aaab-ab3ca97cd0cb",
+        "model": "gpt-5.3-codex-xhigh-fast"
+      },
+      "human_author": "李志伟",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 0,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    }
+  }
+}
