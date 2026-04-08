@@ -43,6 +43,7 @@
 - 类名/接口名规范：{naming_convention}
 - API 路径规范：{api_path_convention}
 - 需替换历史命名：{legacy_name_to_replace}
+- 常规流程命名约束：不得使用 `LEGACY`/`历史` 语义命名（如用 `TERM_ASSET_MGMT`，不用 `LEGACY_*`）
 
 ## 历史兼容方案（字段/类型演进场景必填）
 | 兼容点 | 旧逻辑影响 | 方案A | 方案B | 推荐 |
@@ -94,6 +95,7 @@
 - Class/API naming convention: {naming_convention}
 - API path convention: {api_path_convention}
 - Legacy names to be replaced: {legacy_name_to_replace}
+- Regular-flow naming rule: do not use `LEGACY`/`history` semantics for active normal flows
 
 ## Legacy Compatibility Plan (required for field/type evolution)
 | Compatibility Item | Legacy Impact | Option A | Option B | Recommended |

@@ -163,6 +163,7 @@ description: Generates system analysis documents from PRD and project context us
 1. 必须更新 `plan.<lang>.md` 中类/方法/接口命名。
 2. 必须同步到 `DOC` 正文，避免“方案命名”与“正文命名”不一致。
 3. `REVIEW` 阶段需增加命名一致性检查。
+4. 对“仍在使用的常规流程/常规类型”，禁止使用 `LEGACY`/`历史` 语义命名；应使用中性业务维度命名（如 `TERM_ASSET_MGMT`）。
 
 ## End-to-end flow
 
