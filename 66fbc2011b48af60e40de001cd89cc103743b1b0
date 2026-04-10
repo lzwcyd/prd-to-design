@@ -1,0 +1,25 @@
+SKILL.md
+  78fd4ca812bfc8f4 8,18-19,55,57-59,61,63-69,90
+README.md
+  78fd4ca812bfc8f4 26,44-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "66fbc2011b48af60e40de001cd89cc103743b1b0",
+  "prompts": {
+    "78fd4ca812bfc8f4": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "769c9eda-237a-48ac-ab27-21aa356c3796",
+        "model": "gpt-5.3-codex-xhigh-fast"
+      },
+      "human_author": "李志伟",
+      "messages": [],
+      "total_additions": 20,
+      "total_deletions": 9,
+      "accepted_lines": 20,
+      "overriden_lines": 0
+    }
+  }
+}
