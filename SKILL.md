@@ -5,7 +5,7 @@ description: Generates system analysis documents from PRD and project context us
 
 # PRD to 系分（SDD 状态机版）
 
-**Version:** 2.2 · **Logical id:** `prd_to_system_analysis`
+**Version:** 2.3 · **Logical id:** `prd_to_system_analysis`
 
 ## Input
 
@@ -15,7 +15,8 @@ description: Generates system analysis documents from PRD and project context us
 - `project_root`（可选）：工程根目录，默认当前工作目录
 - `output_path`（可选）：最终系分输出路径；多文档时可作为输出目录
 - `historical_docs_dir`（可选）：历史 PRD/系分样本目录
-- `artifact_dir`（可选）：中间产物目录（优先级最高）
+- `artifact_dir`（可选）：中间产物基础目录（优先级最高）
+- `session_id`（可选）：会话唯一 ID；未指定时优先使用运行时会话 ID
 - `lang`（可选）：`zh-CN` | `en`（默认按用户本轮语言）
 - `start_phase`（可选）：`AUTO` | `SPEC` | `SPLIT` | `CURRENT_STATE` | `PLAN` | `DOC` | `REVIEW`（默认 `AUTO`）
 - `manual_edit_mode`（可选）：`on` | `off`（默认 `on`，接管用户手改中间文档）
@@ -51,13 +52,21 @@ description: Generates system analysis documents from PRD and project context us
 
 ## Artifact directory（中间产物落盘）
 
-`artifact_root` 按以下优先级解析：
+为满足“默认写入 skill 目录并按会话隔离”的要求，先解析基础目录 `base_dir`，再拼接会话子目录：
 
-1. `artifact_dir`（用户显式指定）
-2. 环境变量 `SDD_ARTIFACT_DIR`
-3. `project_root`
+1. `artifact_dir`（用户显式指定基础目录）
+2. 环境变量 `SDD_ARTIFACT_DIR`（可选全局基础目录）
+3. skill 目录（`SKILL.md` 所在目录）
 
-建议在全局目录下使用子目录 `${SDD_ARTIFACT_DIR}/${project_slug}/`，避免多项目冲突。
+`session_id` 按以下顺序解析：
+
+1. 运行时提供的会话唯一 ID
+2. 输入参数 `session_id`
+3. 若仍不可得，要求用户补充 `session_id` 后再继续（不得回退到固定目录）
+
+最终产物目录：
+
+- `artifact_root = <base_dir>/<session_id>`
 
 ### Mandatory artifacts（必须落盘）
 
@@ -78,7 +87,7 @@ description: Generates system analysis documents from PRD and project context us
 
 每次进入 `INIT` 时先执行恢复检查：
 
-1. 定位 `artifact_root` 与 `lang`。
+1. 基于 `base_dir + session_id` 定位 `artifact_root` 与 `lang`。
 2. 若存在 `analysis.state.<lang>.json` 或阶段文档，汇总最近进度。
 3. 询问用户：`resume`（继续历史）或 `restart`（从头开始）。
 4. `resume`：从最近未完成阶段继续，优先复用已落盘中间文档。

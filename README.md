@@ -23,6 +23,7 @@
 - 默认模板：`templates/系分模版.md`
 - 分阶段：`SPEC -> SPLIT -> CURRENT_STATE -> PLAN -> DOC -> REVIEW`
 - 中间产物必须落盘：`spec/split/current-state/plan/review` + `analysis.state.<lang>.json`
+- 默认产物目录：`<skill_dir>/<session_id>/`（`artifact_dir` 可覆盖基础目录）
 - 大 PRD：先 `SPLIT`（切片映射）并确认，再进入后续阶段
 - 方案阶段：必须给至少 A/B 两案并等待用户选择
 - `DOC` 之前有最终门禁：用户明确确认后才能按模板生成系分正文
@@ -40,7 +41,8 @@
 - prd: /path/to/【PRD】xxx.md
 - project_root: /path/to/project
 - historical_docs_dir: /path/to/history_docs
-- artifact_dir: /path/to/artifacts (可选，用于落盘中间文件)
+- artifact_dir: /path/to/artifacts (可选，作为中间产物基础目录)
+- session_id: <当前会话唯一ID> (可选，未指定时使用运行时会话 ID)
 ```
 
 ## 常见场景
