@@ -1,6 +1,8 @@
-# prd-to-system-analysis-skill
+# prd-to-design
 
-基于 PRD + 工程现状，按 SDD 流程产出系分文档的 Skill。
+基于 PRD + 工程现状，按 SDD 流程产出系分文档（设计文档）的 Skill。
+
+> 历史名：`prd-to-system-analysis` / 仓库 `prd-to-system-analysis-skill`。新名 `prd-to-design` 与并列两个 skill `design-to-code`、`prd-to-code` 形成"输入→输出"对称命名。
 
 ## 文件结构
 
@@ -37,7 +39,7 @@
 ## 最小使用示例
 
 ```text
-请使用 prd-to-system-analysis skill 生成系分：
+请使用 prd-to-design skill 生成系分：
 - prd: /path/to/【PRD】xxx.md
 - project_root: /path/to/project
 - historical_docs_dir: /path/to/history_docs
