@@ -28,7 +28,7 @@ description: >-
 - `project_root`（可选）：工程根目录，默认当前工作目录
 - `output_path`（可选）：最终系分输出路径；多文档时可作为输出目录
 - `historical_docs_dir`（可选）：历史 PRD/系分样本目录
-- `artifact_dir`（可选）：中间产物基础目录（优先级最高）
+- `artifact_dir`（可选）：中间产物基础目录（显式指定，优先级最高；缺省时按"PRD 文件目录 → 工作目录"回退，详见 Artifact directory 章节）
 - `session_id`（可选）：会话唯一 ID；未指定时优先使用运行时会话 ID
 - `lang`（可选）：`zh-CN` | `en`（默认按用户本轮语言）
 - `start_phase`（可选）：`AUTO` | `SPEC` | `SPLIT` | `CURRENT_STATE` | `PLAN` | `DOC` | `REVIEW`（默认 `AUTO`）
@@ -65,11 +65,18 @@ description: >-
 
 ## Artifact directory（中间产物落盘）
 
-为满足“默认写入 skill 目录并按会话隔离”的要求，先解析基础目录 `base_dir`，再拼接会话子目录：
+中间产物默认与 PRD/工程贴近落盘，避免污染 skill 仓库自身。先解析基础目录 `base_dir`，再拼接会话子目录。
 
-1. `artifact_dir`（用户显式指定基础目录）
-2. 环境变量 `SDD_ARTIFACT_DIR`（可选全局基础目录）
-3. skill 目录（`SKILL.md` 所在目录）
+`base_dir` 解析优先级（高 → 低）：
+
+1. **显式指定（最高）**
+   - 输入参数 `artifact_dir`（用户在调用时显式指定）
+   - 环境变量 `SDD_ARTIFACT_DIR`（全局显式配置）
+   - 二者同时存在时，`artifact_dir` 优先于环境变量
+2. **PRD 文件所在目录**：当 `prd` 解析为文件路径（包括用户显式提供、`@文件` 引用、或自动在 `project_root` 搜索得到的 PRD 文件）时，使用该 PRD 文件的**父目录**
+3. **工作目录**：当 PRD 为内联文本、无可定位的源文件时，使用 `project_root`（未提供则为当前工作目录 `cwd`）
+
+禁止回退到 skill 自身目录（`SKILL.md` 所在目录），避免在 skill 仓库内堆积业务产物。
 
 `session_id` 按以下顺序解析：
 
@@ -80,6 +87,8 @@ description: >-
 最终产物目录：
 
 - `artifact_root = <base_dir>/<session_id>`
+
+每轮进入 `INIT` 时必须把解析出的 `base_dir`、`base_dir_source`（来源：`artifact_dir` / `SDD_ARTIFACT_DIR` / `prd_file_dir` / `project_root` / `cwd`）、`artifact_root` 显式回显给用户，便于人工核对。
 
 ### Mandatory artifacts（必须落盘）
 
