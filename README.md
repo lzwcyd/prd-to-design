@@ -25,10 +25,11 @@
 - 默认模板：`templates/系分模版.md`
 - 分阶段：`SPEC -> SPLIT -> CURRENT_STATE -> PLAN -> DOC -> REVIEW`
 - 中间产物必须落盘：`spec/split/current-state/plan/review` + `analysis.state.<lang>.json`
-- 默认产物目录：`<base_dir>/<session_id>/`，其中 `base_dir` 解析优先级：
-  1. 显式指定 `artifact_dir`（或环境变量 `SDD_ARTIFACT_DIR`）— 最高
-  2. PRD 文件所在目录（PRD 为文件路径时）
-  3. 工作目录 / `project_root`（PRD 为内联文本时）
+- 默认产物目录：`<base_dir>/<session_id>/`，其中 `base_dir` 解析规则（避免与并列 skill `prd-to-code`、`design-to-code` 冲突）：
+  1. 显式指定 `artifact_dir`（或环境变量 `SDD_ARTIFACT_DIR`）— 最高，按用户指定路径整体替换
+  2. 缺省默认：`<parent_dir>/prd-to-design/`
+     - `parent_dir` 优先取 PRD 文件所在目录；PRD 为内联文本时取 `project_root` / 工作目录
+     - 强制追加 `prd-to-design/` skill 子目录，避免覆盖其它 skill 同名中间文件
 - 大 PRD：先 `SPLIT`（切片映射）并确认，再进入后续阶段
 - 方案阶段：必须给至少 A/B 两案并等待用户选择
 - `DOC` 之前有最终门禁：用户明确确认后才能按模板生成系分正文

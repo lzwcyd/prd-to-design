@@ -28,7 +28,7 @@ description: >-
 - `project_root`（可选）：工程根目录，默认当前工作目录
 - `output_path`（可选）：最终系分输出路径；多文档时可作为输出目录
 - `historical_docs_dir`（可选）：历史 PRD/系分样本目录
-- `artifact_dir`（可选）：中间产物基础目录（显式指定，优先级最高；缺省时按"PRD 文件目录 → 工作目录"回退，详见 Artifact directory 章节）
+- `artifact_dir`（可选）：中间产物基础目录（显式指定，优先级最高；缺省时按"PRD 文件目录 → 工作目录"回退，并自动追加 `prd-to-design/` skill 子目录避免与其它 SDD skill 冲突，详见 Artifact directory 章节）
 - `session_id`（可选）：会话唯一 ID；未指定时优先使用运行时会话 ID
 - `lang`（可选）：`zh-CN` | `en`（默认按用户本轮语言）
 - `start_phase`（可选）：`AUTO` | `SPEC` | `SPLIT` | `CURRENT_STATE` | `PLAN` | `DOC` | `REVIEW`（默认 `AUTO`）
@@ -65,18 +65,31 @@ description: >-
 
 ## Artifact directory（中间产物落盘）
 
-中间产物默认与 PRD/工程贴近落盘，避免污染 skill 仓库自身。先解析基础目录 `base_dir`，再拼接会话子目录。
+中间产物默认与 PRD/工程贴近落盘，且强制隔离在以**当前 skill 名命名**的子目录下，避免与并列的 `prd-to-code` / `design-to-code` skill 互相覆盖（这三个 skill 共享相似的中间文件名）。
 
-`base_dir` 解析优先级（高 → 低）：
+落盘路径分两步解析：先确定 `parent_dir`（上层目录），再按规则得到 `base_dir`，最后拼接 `session_id`。
 
-1. **显式指定（最高）**
+**Skill segment（本 skill 固定值）：** `prd-to-design`
+
+### Step 1: `parent_dir` 解析优先级（高 → 低）
+
+1. **PRD 文件所在目录**：当 `prd` 解析为文件路径（用户显式提供、`@文件` 引用、或自动在 `project_root` 搜索得到的 PRD 文件）时，使用该 PRD 文件的**父目录**
+2. **工作目录**：当 PRD 为内联文本、无可定位的源文件时，使用 `project_root`（未提供则为当前工作目录 `cwd`）
+
+禁止回退到 skill 自身目录（`SKILL.md` 所在目录），避免在 skill 仓库内堆积业务产物。
+
+### Step 2: `base_dir` 解析
+
+1. **显式指定（最高优先级）** — 直接整体替换默认 `base_dir`，**不**自动追加 skill 名（视用户已自行决定路径布局）
    - 输入参数 `artifact_dir`（用户在调用时显式指定）
    - 环境变量 `SDD_ARTIFACT_DIR`（全局显式配置）
    - 二者同时存在时，`artifact_dir` 优先于环境变量
-2. **PRD 文件所在目录**：当 `prd` 解析为文件路径（包括用户显式提供、`@文件` 引用、或自动在 `project_root` 搜索得到的 PRD 文件）时，使用该 PRD 文件的**父目录**
-3. **工作目录**：当 PRD 为内联文本、无可定位的源文件时，使用 `project_root`（未提供则为当前工作目录 `cwd`）
+   - 若用户显式指定的目录与其它并列 skill 的默认目录相同，必须给出冲突告警并要求用户确认
+2. **默认（缺省）**：`base_dir = <parent_dir>/prd-to-design`
+   - 若该路径不存在，需自动创建
+   - 若该路径已存在但属于另一 skill（含 `dev.state.<lang>.json` / `sdd.state.<lang>.json` 等他 skill 独占产物），必须告警并要求用户决策
 
-禁止回退到 skill 自身目录（`SKILL.md` 所在目录），避免在 skill 仓库内堆积业务产物。
+### Step 3: `session_id` 与最终目录
 
 `session_id` 按以下顺序解析：
 
@@ -88,7 +101,13 @@ description: >-
 
 - `artifact_root = <base_dir>/<session_id>`
 
-每轮进入 `INIT` 时必须把解析出的 `base_dir`、`base_dir_source`（来源：`artifact_dir` / `SDD_ARTIFACT_DIR` / `prd_file_dir` / `project_root` / `cwd`）、`artifact_root` 显式回显给用户，便于人工核对。
+### Echo & audit（每轮 INIT 必须回显）
+
+每轮进入 `INIT` 时必须把以下字段显式回显给用户，便于人工核对：
+
+- `parent_dir`、`parent_dir_source`（来源：`prd_file_dir` / `project_root` / `cwd`）
+- `base_dir`、`base_dir_source`（来源：`artifact_dir` / `SDD_ARTIFACT_DIR` / `default(<parent_dir>/prd-to-design)`）
+- `artifact_root`
 
 ### Mandatory artifacts（必须落盘）
 
