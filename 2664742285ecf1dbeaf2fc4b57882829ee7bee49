@@ -1,0 +1,44 @@
+examples.md
+  8abfdb8add063d61 210
+impact-scan.md
+  8abfdb8add063d61 1-58
+templates/en.md
+  8abfdb8add063d61 13,17,37,103-104,113-114
+templates/context-scan.md
+  8abfdb8add063d61 1-99
+templates/impact-scan.md
+  8abfdb8add063d61 1-81
+SKILL.md
+  8abfdb8add063d61 5-14,38,44,120,123,148,152-153,155-156,206,227,230-231,247,264,267,291-298,303-304,312,314-319,385-386,390-391,445,448,454,457
+doc.md
+  8abfdb8add063d61 7,11
+templates/zh-CN.md
+  8abfdb8add063d61 13,17,37,103-104,113-114
+split.md
+  8abfdb8add063d61 21,43
+README.md
+  8abfdb8add063d61 11,14,20,27-28,73-128
+context-scan.md
+  8abfdb8add063d61 1-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0-codex",
+  "base_commit_sha": "2664742285ecf1dbeaf2fc4b57882829ee7bee49",
+  "prompts": {
+    "8abfdb8add063d61": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "3c3bb036-3cc2-4d85-84a7-e89aafaf1f2b",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "李志伟",
+      "messages": [],
+      "total_additions": 482,
+      "total_deletions": 107,
+      "accepted_lines": 427,
+      "overriden_lines": 0,
+      "messages_url": "https://codeaiapi.xinfei-inc.cn/cas/50679f59702eec655752782475d41e954d534d9bbe91ba14868cf2be5e665588"
+    }
+  }
+}
