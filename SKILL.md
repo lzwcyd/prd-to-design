@@ -1,23 +1,14 @@
 ---
 name: prd-to-design
 description: >-
-  Generates 系分文档 (design docs / PlantUML, NOT source code) from a PRD via SDD
-  state machine CONTEXT_SCAN → SPEC → SPLIT → IMPACT_SCAN → PLAN → DOC → REVIEW;
-  bilingual (zh-CN/en), resumable, manual-edit takeover, requirement-correction
-  rollback, strict DOC final gate. CONTEXT_SCAN is a PRD-independent shallow
-  repo snapshot; IMPACT_SCAN is a deep PRD-scoped inventory of impacted
-  capabilities, APIs, data schemas and legacy logic. Use when the user has a
-  PRD AND mentions 系分 / 系统分析 / 方案设计 / 架构设计 / 概要设计 / 详细设计 /
-  接口设计 / 按模板成文 / A B 方案 / 多系统 / 跨上下游 / 评审 / 走流程 /
-  PlantUML / 组件图 / 时序图 / ER 图 / 字段新增 / 类型新增 / 历史兼容 /
-  命名规范 / 工程画像 / 工程现状 / 仓库摸底 / 两层现状 / CONTEXT_SCAN /
-  IMPACT_SCAN / context.<lang>.md / impact.<lang>.md /
-  split.<lang>.md / review.<lang>.md / analysis.state.<lang>.json /
-  system-analysis.<lang>.md / 系分模版.md / docx 导出. Do NOT trigger when the
-  user wants code directly from a PRD — defer to prd-to-code. Do NOT trigger
-  when the user already has a finished 系分 doc and wants to develop from it —
-  defer to design-to-code. On ambiguity (PRD only, no clear intent),
-  ask the user to choose A=系分 / B=直接代码 / C=已有系分写代码.
+  Generate 系分文档 / system design docs, including PlantUML when needed, from a
+  PRD through the SDD state machine CONTEXT_SCAN -> SPEC -> SPLIT ->
+  IMPACT_SCAN -> PLAN -> DOC -> REVIEW. Use when the user has a PRD and asks
+  for 系分、系统分析、方案设计、架构设计、概要/详细/接口设计、按模板成文、A/B 方案、
+  多系统/上下游影响、评审流程、PlantUML 图、字段/类型新增、历史兼容、工程画像、
+  工程现状或仓库摸底. Do not use for direct PRD-to-code work or when the user
+  already has a finished design doc and wants implementation; ask to choose 系分,
+  直接代码, or 已有系分写代码 when intent is ambiguous.
 ---
 
 # PRD to 系分（SDD 状态机版）
