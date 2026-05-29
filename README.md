@@ -77,7 +77,10 @@
 
 ```mermaid
 flowchart LR
-    contextScan[CONTEXT_SCAN] --> spec[SPEC]
+    init[INIT] --> sync[ARTIFACT_SYNCING]
+    sync -. 每阶段前重复 .-> sync
+    sync --> contextScan[CONTEXT_SCAN]
+    contextScan --> spec[SPEC]
     spec --> split[SPLIT]
     split --> impactScan[IMPACT_SCAN]
     impactScan --> plan[PLAN]
@@ -108,7 +111,7 @@ flowchart LR
 | `INIT` | 读取输入并检查可恢复 |
 | `ARTIFACT_DIR_CONFIRMING` | 默认产物目录确认（仅缺省路径，确认或改路径） |
 | `ENTRY_VALIDATING` | 校验阶段跳转前置 |
-| `ARTIFACT_SYNCING` | 同步用户手改中间文档 |
+| `ARTIFACT_SYNCING` | 每阶段进入前按 `content_sha256` 全量比对已落盘产物，命中手改则接管（adopt/merge/regenerate） |
 | `ROLLBACK_SYNCING` | 需求纠偏后的回退与失效标记 |
 | `CONTEXT_SCAN_DRAFT` / `CONTEXT_SCAN_CONFIRMING` | 工程画像与确认 |
 | `SPEC_DRAFT` / `SPEC_CONFIRMING` | 需求分析与确认 |
@@ -124,7 +127,7 @@ flowchart LR
 ### 特殊行为
 
 - **默认产物目录确认**：当 `base_dir` 走缺省默认（未显式指定 `artifact_dir` / `SDD_ARTIFACT_DIR`）时，落盘前先经用户确认或改路径；确认前不创建目录、不写入任何中间产物。
-- **手改同步**：`manual_edit_mode=on` 时每阶段前重读中间文档；检测到变化提示 `adopt` / `merge` / `regenerate`。
+- **手改同步**：`manual_edit_mode=on` 时，每阶段前进入 `ARTIFACT_SYNCING`，按 `content_sha256` 对所有已落盘产物做手改检测；命中变化提示 `adopt` / `merge` / `regenerate`。
 - **需求纠偏回退**：当用户出现"理解错误 / 回溯 / 改需求 / 范围变更"等信号，识别受影响最早阶段（通常 `SPEC` 或 `SPLIT`），下游产物标记 `stale_due_to_spec_change` 并按新基线重生。
 - **DOC 强门禁**：在生成模板正文前必须用户确认通过 `DOC_FINAL_GATE`，否则禁止进入 `DOC`。
 - **首次会话默认**：`start_phase=AUTO` 解析为 `CONTEXT_SCAN`；存在已确认 `context.<lang>.md` 时回落到 `SPEC`。

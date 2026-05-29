@@ -37,7 +37,7 @@
   - 单文档：`system-analysis.<lang>.md`
   - 多文档：`system-analysis.<system>.<lang>.md`
 - 若用户指定 `output_path`，优先按用户路径输出。
-- 更新 `artifact_root/prd-to-design.state.<lang>.json`（至少包含 `final_docs` 与 `current_state=DOC_CONFIRMING`）。
+- 更新 `artifact_root/prd-to-design.state.<lang>.json`（至少包含 `final_docs` 与 `current_state=DOC_CONFIRMING`）；`final_docs` 每一项需记录 `path`、`content_sha256`、`written_at` 与 `source=skill`，作为手改检测基线。
 - 若用户要求导出 `doc/docx`，在 REVIEW 后执行导出并记录导出路径。
 
 ## 与下游衔接

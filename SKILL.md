@@ -132,6 +132,36 @@ description: >-
 - 单文档：`system-analysis.<lang>.md`
 - 多文档：`system-analysis.<system>.<lang>.md`
 
+## State file schema（状态文件结构）
+
+`prd-to-design.state.<lang>.json` 是恢复、手改检测、回退的唯一事实源，至少包含以下结构：
+
+```json
+{
+  "current_state": "SPEC_CONFIRMING",
+  "last_updated": "<iso8601>",
+  "lang": "zh-CN",
+  "artifact_root": "<base_dir>/<session_id>",
+  "artifact_dir_confirmed": true,
+  "selected_option": null,
+  "artifacts": {
+    "context": { "path": "context.zh-CN.md", "content_sha256": "<sha256>", "written_at": "<iso8601>", "source": "skill", "stale": false },
+    "spec":    { "path": "spec.zh-CN.md",    "content_sha256": "<sha256>", "written_at": "<iso8601>", "source": "skill", "stale": false }
+  },
+  "final_docs": [],
+  "rollback": null
+}
+```
+
+字段约定：
+
+- `artifacts.<phase>` 必须是结构化对象，**不得**退化为布尔或纯路径字符串（否则手改检测失去基线）。
+- `content_sha256`：对**实际写盘的文件内容**（UTF-8 字节）计算的 SHA-256，是手改检测的**唯一判定基线**；每次由 skill 写盘后必须立即回算并回写。
+- `written_at`：本次 skill 写盘时间（ISO-8601），仅作展示/排序，**不**作为手改判定依据。
+- `source`：`skill`（最近一次内容由本 skill 写入）| `manual`（已确认采用用户手改版本，`adopt` 后置为该值）。
+- `stale`：需求纠偏回退时置 `true`（等价 `stale_due_to_spec_change`），表示该产物待重生成。
+- `final_docs`：最终正文数组，每项结构同 `artifacts.<phase>`（含 `path` / `content_sha256` / `written_at` / `source`）。
+
 ## Resume behavior（恢复会话）
 
 每次进入 `INIT` 时先执行恢复检查：
@@ -139,7 +169,7 @@ description: >-
 1. 基于 `base_dir + session_id` 定位 `artifact_root` 与 `lang`。
 2. 若存在 `prd-to-design.state.<lang>.json` 或阶段文档，汇总最近进度。
 3. 询问用户：`resume`（继续历史）或 `restart`（从头开始）。
-4. `resume`：从最近未完成阶段继续，优先复用已落盘中间文档。
+4. `resume`：从最近未完成阶段继续，优先复用已落盘中间文档；复用前必须先进入 `ARTIFACT_SYNCING`，对所有已落盘产物按 `content_sha256` 做手改检测（见 Manual edit synchronization），命中差异先按 `adopt`/`merge`/`regenerate` 处理再继续。
 5. `restart`：保留旧文档（可时间戳备份）并重启流程。
 6. 若历史状态已含 `artifact_dir_confirmed=true`，沿用既有 `artifact_root`，不再触发 Step 4 默认目录确认门禁。
 
@@ -169,16 +199,20 @@ description: >-
 
 ## Manual edit synchronization（人工修改接管）
 
-当 `manual_edit_mode=on`：
+当 `manual_edit_mode=on`，在 `INIT`（含 resume）之后、且每个阶段 `*_DRAFT` 之前，必须先进入 `ARTIFACT_SYNCING` 做一次手改检测：
 
-1. 每次阶段开始前重新读取已有中间文档。
-2. 若检测到文件与状态记录不一致（时间戳/校验和变化），视为用户手改。
-3. 提示用户选择：
-   - `adopt`：采用手改版本继续
-   - `merge`：与当前草稿合并
-   - `regenerate`：基于最新输入重生成该阶段
+1. 对 `artifacts`（及 `final_docs`）中**所有已落盘产物**（不只当前阶段）逐个重新读取磁盘内容并计算 `SHA-256`。
+2. 与状态文件中持久化的 `content_sha256`（baseline）逐一比对：
+   - **判定基线唯一为 `content_sha256`**：当前内容指纹 ≠ baseline ⇒ 视为用户手改。
+   - 文件时间戳（mtime）仅可作辅助提示，**不得**作为判定依据——skill 自身写盘也会刷新 mtime，无法区分作者。
+   - 若某产物在 state 中缺少 `content_sha256`（历史遗留状态文件），不得静默放过：提示"无法确认是否被手改"，并要求补一次指纹基线后再继续。
+3. 命中手改时，对每个变更产物提示用户选择：
+   - `adopt`：采用手改版本继续，将该产物 `source` 置为 `manual`，并把 `content_sha256` 重算为当前值
+   - `merge`：与当前草稿合并，合并结果重新写盘后刷新 `content_sha256`，`source=skill`
+   - `regenerate`：基于最新输入重生成该阶段，写盘后刷新 `content_sha256`，`source=skill`
 4. 未确认策略前，不覆盖用户手改内容。
 5. 若用户仅回复“ok/继续/确认”且未指定策略，默认按 `adopt` 处理，并在状态文件记录该默认行为。
+6. 若手改的是上游产物（如改了 `spec` 但当前在 `PLAN`），按"需求纠偏回退协议"评估是否需要把下游产物 `stale` 置位并重生成。
 
 ## Intent normalization（简短确认语义归一）
 
@@ -231,7 +265,7 @@ description: >-
 [START: AUTO|CONTEXT_SCAN|SPEC|SPLIT|IMPACT_SCAN|PLAN|DOC|REVIEW]
 -> 入口校验
 -> 产物目录确认（仅默认目录：用户确认或改路径）
--> 手改同步
+-> 手改同步（ARTIFACT_SYNCING；每个阶段进入前都重复执行：按 content_sha256 全量比对已落盘产物）
 -> CONTEXT_SCAN（无 PRD 依赖，宽而浅）
 -> SPEC -> SPLIT -> IMPACT_SCAN（PRD 范围内深扫 + 历史兼容）-> PLAN
 -> DOC_FINAL_GATE（必须用户确认）
@@ -245,7 +279,7 @@ description: >-
 
 1. 默认顺序执行，可显式跳转，但必须通过入口校验。
 2. Unknowns 必须显式标记 `❓`，禁止静默假设。
-3. 每阶段完成必须落盘并更新 `prd-to-design.state.<lang>.json`。
+3. 每阶段完成必须落盘并更新 `prd-to-design.state.<lang>.json`；写盘后必须对该产物内容回算 `content_sha256` 写入 `artifacts.<phase>`（手改检测基线），缺失指纹视为违规。
 4. `PLAN` 阶段必须给至少两案（A/B）并等待用户选择。
 5. 用户未明确选项前，不得进入 `DOC`。
 6. 未经最终确认，不得进入 `DOC` 按模板生成正文。
@@ -266,7 +300,7 @@ description: >-
 | `INIT` | 读取输入并检查是否可恢复 |
 | `ARTIFACT_DIR_CONFIRMING` | 默认产物目录确认（仅 `base_dir_source=default`，确认或改路径） |
 | `ENTRY_VALIDATING` | 校验阶段跳转前置条件 |
-| `ARTIFACT_SYNCING` | 同步用户手改中间文档 |
+| `ARTIFACT_SYNCING` | 每个阶段进入前按 `content_sha256` 全量比对已落盘产物，命中手改则接管（adopt/merge/regenerate） |
 | `ROLLBACK_SYNCING` | 需求纠偏后的回退与失效标记 |
 | `CONTEXT_SCAN_DRAFT` / `CONTEXT_SCAN_CONFIRMING` | 工程画像（无 PRD 依赖，宽而浅）与确认 |
 | `SPEC_DRAFT` / `SPEC_CONFIRMING` | 需求分析与确认 |

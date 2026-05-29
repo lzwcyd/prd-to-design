@@ -92,7 +92,7 @@ Choose next step:
 ## Manual Edit Detected Block
 
 ```markdown
-I detected manual edits in `{artifact_path}` since last sync.
+I detected manual edits in `{artifact_path}` (content fingerprint differs from the recorded `content_sha256` baseline).
 
 Choose how to proceed:
 1. adopt: continue with your edited version

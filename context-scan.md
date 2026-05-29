@@ -34,6 +34,7 @@
 1. 按当前 `lang` 使用 `templates/context-scan.md` 对应语言骨架组织输出。
 2. 写入 `artifact_root/context.<lang>.md`。
 3. 更新 `artifact_root/prd-to-design.state.<lang>.json`（至少包含 `artifacts.context`、`current_state`、`last_updated`）。
+4. 写盘后对 `context.<lang>.md` 的最终内容回算 `SHA-256`，写入 `artifacts.context.content_sha256`、`written_at` 与 `source=skill`，作为后续手改检测基线。
 
 ## 最小校验清单
 
