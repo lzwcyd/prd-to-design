@@ -1,0 +1,46 @@
+context-scan.md
+  s_714bf16d389fb1::t_9f2f1ebaeda8db 37
+templates/en.md
+  s_714bf16d389fb1::t_acbe5d5371820c 95
+plan.md
+  s_714bf16d389fb1::t_85fdea175a4573 34
+doc.md
+  s_714bf16d389fb1::t_20af8171b646e1 40
+spec.md
+  s_714bf16d389fb1::t_e396a4bfbfe010 23
+impact-scan.md
+  s_714bf16d389fb1::t_a3df96ec22b90f 47
+README.md
+  s_714bf16d389fb1::t_c16a352262b281 114
+  s_714bf16d389fb1::t_8895b4973e2018 80-83
+  s_714bf16d389fb1::t_87086e755bd632 130
+SKILL.md
+  s_714bf16d389fb1::t_86b0d8004467c4 268
+  s_714bf16d389fb1::t_25905e64eea3e3 172
+  s_714bf16d389fb1::t_a9548cfe567f9c 282
+  s_714bf16d389fb1::t_9ff038fc4cd29b 303
+  s_714bf16d389fb1::t_fd3cf01cd28807 135-164
+  s_714bf16d389fb1::t_37a16204aaaf3f 202-212,215
+split.md
+  s_714bf16d389fb1::t_b0da24ff210469 33
+review.md
+  s_714bf16d389fb1::t_de3501b812ae2b 29
+templates/zh-CN.md
+  s_714bf16d389fb1::t_c4dca4eb831c65 95
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "1c7eec69ff1b34687bb572be8cd7a0402dc6a34a",
+  "prompts": {},
+  "sessions": {
+    "s_714bf16d389fb1": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "f6be2b9a-a982-4413-abb8-c05491d431b4",
+        "model": "composer-2.5"
+      },
+      "human_author": "lzwcyd <lzwcyd@users.noreply.github.com>"
+    }
+  }
+}
