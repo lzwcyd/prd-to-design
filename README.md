@@ -2,7 +2,7 @@
 
 基于 PRD + 工程现状，按 SDD 流程产出系分文档（设计文档）的 Skill。
 
-> 历史名：`prd-to-system-analysis` / 仓库 `prd-to-system-analysis-skill`。新名 `prd-to-design` 与并列两个 skill `design-to-code`、`prd-to-code` 形成"输入→输出"对称命名。
+> `prd-to-design` 与并列的 `design-to-code`、`prd-to-code` 两个 skill 形成"输入→输出"对称命名。
 
 ## 文件结构
 
@@ -31,6 +31,7 @@
   2. 缺省默认：`<parent_dir>/prd-to-design/`
      - `parent_dir` 优先取 PRD 文件所在目录；PRD 为内联文本时取 `project_root` / 工作目录
      - 强制追加 `prd-to-design/` skill 子目录，避免覆盖其它 skill 同名中间文件
+     - ⚠️ 缺省目录为系统推导，落盘前需经用户确认（确认沿用 or 提供新路径）；显式指定 `artifact_dir` / `SDD_ARTIFACT_DIR` 时免确认
 - 大 PRD：先 `SPLIT`（切片映射）并确认，再进入后续阶段
 - 方案阶段：必须给至少 A/B 两案并等待用户选择
 - `DOC` 之前有最终门禁：用户明确确认后才能按模板生成系分正文
@@ -105,6 +106,7 @@ flowchart LR
 | State | 含义 |
 |-------|------|
 | `INIT` | 读取输入并检查可恢复 |
+| `ARTIFACT_DIR_CONFIRMING` | 默认产物目录确认（仅缺省路径，确认或改路径） |
 | `ENTRY_VALIDATING` | 校验阶段跳转前置 |
 | `ARTIFACT_SYNCING` | 同步用户手改中间文档 |
 | `ROLLBACK_SYNCING` | 需求纠偏后的回退与失效标记 |
@@ -121,6 +123,7 @@ flowchart LR
 
 ### 特殊行为
 
+- **默认产物目录确认**：当 `base_dir` 走缺省默认（未显式指定 `artifact_dir` / `SDD_ARTIFACT_DIR`）时，落盘前先经用户确认或改路径；确认前不创建目录、不写入任何中间产物。
 - **手改同步**：`manual_edit_mode=on` 时每阶段前重读中间文档；检测到变化提示 `adopt` / `merge` / `regenerate`。
 - **需求纠偏回退**：当用户出现"理解错误 / 回溯 / 改需求 / 范围变更"等信号，识别受影响最早阶段（通常 `SPEC` 或 `SPLIT`），下游产物标记 `stale_due_to_spec_change` 并按新基线重生。
 - **DOC 强门禁**：在生成模板正文前必须用户确认通过 `DOC_FINAL_GATE`，否则禁止进入 `DOC`。

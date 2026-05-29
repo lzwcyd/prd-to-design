@@ -80,8 +80,9 @@ description: >-
    - 环境变量 `SDD_ARTIFACT_DIR`（全局显式配置）
    - 二者同时存在时，`artifact_dir` 优先于环境变量
    - 若用户显式指定的目录与其它并列 skill 的默认目录相同，必须给出冲突告警并要求用户确认
-2. **默认（缺省）**：`base_dir = <parent_dir>/prd-to-design`
-   - 若该路径不存在，需自动创建
+2. **默认（缺省）**：`base_dir = <parent_dir>/prd-to-design`，标记 `base_dir_source=default`
+   - ⚠️ 该路径由系统推导得出，**非用户显式指定**：必须先通过 Step 4「默认目录确认门禁」，由用户确认沿用或改路径后，才能创建目录与落盘
+   - 若该路径不存在，需在用户确认后再自动创建
    - 若该路径已存在但属于另一 skill（含 `dev.state.<lang>.json` / `sdd.state.<lang>.json` 等他 skill 独占产物），必须告警并要求用户决策
 
 ### Step 3: `session_id` 与最终目录
@@ -96,6 +97,18 @@ description: >-
 
 - `artifact_root = <base_dir>/<session_id>`
 
+### Step 4: 默认目录确认门禁（仅当 `base_dir_source=default`）
+
+当 `base_dir` 走缺省默认（用户未通过 `artifact_dir` / `SDD_ARTIFACT_DIR` 显式指定）时，进入 `ARTIFACT_DIR_CONFIRMING` 状态，在落盘任何中间产物前必须先确认：
+
+1. 用「默认产物目录确认块」回显 `parent_dir` / `base_dir` / `artifact_root`，请用户确认或改路径。
+2. 用户响应：
+   - 「确认」/「OK」/「继续」-> 沿用默认 `artifact_root`，置 `artifact_dir_confirmed=true` 后进入后续阶段。
+   - 直接给出新路径 -> 将其按显式指定处理（整体替换 `base_dir`，**不**追加 skill 名），重算 `artifact_root` 并回显一次，再置 `artifact_dir_confirmed=true`。
+3. **确认前不得创建目录、不得写入任何中间产物**（含 `analysis.state.<lang>.json` 自身）。
+4. 当 `base_dir_source` 为 `artifact_dir` / `SDD_ARTIFACT_DIR`（显式指定）时，跳过本门禁，视为用户已决定路径，仅在 Echo & audit 回显。
+5. 确认结果写入 `analysis.state.<lang>.json`（`artifact_dir_confirmed=true` 与最终 `artifact_root`）；Resume 时若已确认过则不再重复询问。
+
 ### Echo & audit（每轮 INIT 必须回显）
 
 每轮进入 `INIT` 时必须把以下字段显式回显给用户，便于人工核对：
@@ -103,6 +116,7 @@ description: >-
 - `parent_dir`、`parent_dir_source`（来源：`prd_file_dir` / `project_root` / `cwd`）
 - `base_dir`、`base_dir_source`（来源：`artifact_dir` / `SDD_ARTIFACT_DIR` / `default(<parent_dir>/prd-to-design)`）
 - `artifact_root`
+- `artifact_dir_confirmed`（默认目录是否已确认；`base_dir_source=default` 且未确认时，回显后必须立即进入 Step 4 确认门禁）
 
 ### Mandatory artifacts（必须落盘）
 
@@ -129,6 +143,7 @@ description: >-
 3. 询问用户：`resume`（继续历史）或 `restart`（从头开始）。
 4. `resume`：从最近未完成阶段继续，优先复用已落盘中间文档。
 5. `restart`：保留旧文档（可时间戳备份）并重启流程。
+6. 若历史状态已含 `artifact_dir_confirmed=true`，沿用既有 `artifact_root`，不再触发 Step 4 默认目录确认门禁。
 
 ## Start-from-any-phase（任意阶段启动）
 
@@ -217,6 +232,7 @@ description: >-
 ```text
 [START: AUTO|CONTEXT_SCAN|SPEC|SPLIT|IMPACT_SCAN|PLAN|DOC|REVIEW]
 -> 入口校验
+-> 产物目录确认（仅默认目录：用户确认或改路径）
 -> 手改同步
 -> CONTEXT_SCAN（无 PRD 依赖，宽而浅）
 -> SPEC -> SPLIT -> IMPACT_SCAN（PRD 范围内深扫 + 历史兼容）-> PLAN
@@ -243,12 +259,14 @@ description: >-
 12. 涉及字段/类型演进时必须给兼容方案与迁移策略。
 13. 命名规范一旦被用户确认，后续阶段必须一致。
 14. 历史样本仅用于风格与边界对齐，冲突时以当前 PRD + 现状证据为准。
+15. 使用默认（缺省）产物目录时，必须先经用户确认或由用户改路径，确认前不得落盘任何中间产物；用户显式指定 `artifact_dir` / `SDD_ARTIFACT_DIR` 时免确认。
 
 ## State machine
 
 | State | Meaning |
 |------|---------|
 | `INIT` | 读取输入并检查是否可恢复 |
+| `ARTIFACT_DIR_CONFIRMING` | 默认产物目录确认（仅 `base_dir_source=default`，确认或改路径） |
 | `ENTRY_VALIDATING` | 校验阶段跳转前置条件 |
 | `ARTIFACT_SYNCING` | 同步用户手改中间文档 |
 | `ROLLBACK_SYNCING` | 需求纠偏后的回退与失效标记 |
@@ -273,6 +291,7 @@ Forbidden：未通过门禁直接生成正文；检测到手改后直接覆盖�
 - Phase Confirmation Block / 阶段确认块
 - Final Gate Before DOC / 最终成文门禁块
 - Resume Prompt Block / 历史恢复提示块
+- Artifact Dir Confirmation Block / 默认产物目录确认块
 - Phase-jump Entry Validation Block / 阶段跳转入口校验提示块
 - Manual Edit Detected Block / 检测到人工修改提示块
 - Rollback Prompt Block / 需求纠偏回退提示块

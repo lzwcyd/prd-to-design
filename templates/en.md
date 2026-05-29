@@ -56,6 +56,24 @@ Please choose:
 2. Start over (restart)
 ```
 
+## Artifact Dir Confirmation Block (default path only)
+
+```markdown
+-------------------
+📁 Confirm artifact output directory (system-derived, not explicitly set by you)
+
+- Parent dir of PRD/project (parent_dir): {parent_dir} (source: {parent_dir_source})
+- Default base dir (base_dir): {base_dir}
+- This session's artifact dir (artifact_root): {artifact_root}
+
+Please confirm whether intermediate artifacts should be written under the path above:
+- "Confirm" / "OK" / "Continue" -> keep this default directory
+- Provide a new path -> use your directory instead (full replacement, no skill-name suffix appended)
+
+Note: nothing is created or written until you confirm.
+-------------------
+```
+
 ## Phase-jump Entry Validation Block
 
 ```markdown
