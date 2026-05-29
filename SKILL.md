@@ -1,10 +1,10 @@
 ---
 name: prd-to-design
 description: >-
-  Turn a PRD into 系分文档 / system design docs (with PlantUML) via the SDD flow
+  Turn a PRD into 系分文档 / system design docs (with Mermaid) via the SDD flow
   CONTEXT_SCAN -> SPEC -> SPLIT -> IMPACT_SCAN -> PLAN -> DOC -> REVIEW. Use when
   a PRD needs 系分、系统分析、方案设计、架构设计、概要/详细/接口设计、按模板成文、
-  A/B 方案、多系统/上下游影响、评审流程、PlantUML 图、字段/类型新增、历史兼容、
+  A/B 方案、多系统/上下游影响、评审流程、Mermaid 图、字段/类型新增、历史兼容、
   工程画像/现状、仓库摸底. Not for direct PRD-to-code, or when a finished design
   doc should drive implementation; if ambiguous, ask: 系分 / 直接代码 / 已有系分写代码.
 ---
@@ -286,7 +286,7 @@ description: >-
 7. 必须先做 `CONTEXT_SCAN`（工程画像，无 PRD 依赖），再读 PRD 形成 `SPEC` / `SPLIT`，再针对切片范围做 `IMPACT_SCAN`（PRD 范围内深扫 + 历史兼容），最后做方案；顺序不可反。
 8. 大 PRD 必须先做切片映射并确认，再进入方案与成文。
 9. 不得编造接口、表结构、现状能力；必须附证据路径/模块。
-10. 图统一使用 `PlantUML`，不得使用 Mermaid。
+10. 图统一使用 `Mermaid`，不得使用 PlantUML。
 11. 需求纠偏时必须回退并标记下游产物失效，不得“带病继续”。
 12. 涉及字段/类型演进时必须给兼容方案与迁移策略。
 13. 命名规范一旦被用户确认，后续阶段必须一致。
@@ -417,7 +417,7 @@ Cursor 通过 frontmatter 的 `description` 决定是否激活本 skill。下表
 ### 本 skill 定位
 
 - **输入**：PRD（文本或文件）
-- **输出**：系分文档（PlantUML 设计稿、按模板成文），**不写代码**
+- **输出**：系分文档（Mermaid 设计稿、按模板成文），**不写代码**
 - **角色场景**：架构师 / 分析师 / 正式流程 / 多系统对齐 / 评审
 
 ### Trigger（应触发）
@@ -426,7 +426,7 @@ Cursor 通过 frontmatter 的 `description` 决定是否激活本 skill。下表
 |------|--------|
 | 流程 | `PRD`、`需求文档`、`产品需求`、`系分`、`系分文档`、`系统分析`、`方案设计`、`架构设计`、`概要设计`、`详细设计`、`接口设计`、`走流程`、`正式流程`、`评审`、`研发对齐`、`多系统`、`跨上下游`、`工程画像`、`工程现状`、`仓库摸底`、`两层现状` |
 | 阶段 | `CONTEXT_SCAN`、`SPEC`、`SPLIT`、`IMPACT_SCAN`、`PLAN`、`DOC`、`REVIEW`、`A B 方案`、`A/B 方案` |
-| 制图 | `PlantUML`、`组件图`、`时序图`、`ER 图`、`类图`、`状态图` |
+| 制图 | `Mermaid`、`组件图`、`时序图`、`ER 图`、`类图`、`状态图` |
 | 演进 | `字段新增`、`类型新增`、`历史兼容`、`兼容处理`、`迁移策略`、`命名规范` |
 | 参数 | `start_phase`、`manual_edit_mode`、`session_id`、`artifact_dir`、`template_path`、`historical_docs_dir`、`export_format` |
 | **独占产物**（不与他 skill 撞名） | `split.<lang>.md`、`review.<lang>.md`、`prd-to-design.state.<lang>.json`、`system-analysis.<lang>.md`、`impact.<lang>.md`、`系分模版.md` |
@@ -443,7 +443,7 @@ Cursor 通过 frontmatter 的 `description` 决定是否激活本 skill。下表
 
 | 用户输入特征 | 路由 |
 |--------------|------|
-| 仅 PRD + `系分` / `系统分析` / `PlantUML` / `方案设计` / `架构设计` / `概要设计` / `详细设计` / `接口设计` / `A B 方案` / `多系统` / `走流程` / `评审` | **本 skill（#1）** |
+| 仅 PRD + `系分` / `系统分析` / `Mermaid` / `方案设计` / `架构设计` / `概要设计` / `详细设计` / `接口设计` / `A B 方案` / `多系统` / `走流程` / `评审` | **本 skill（#1）** |
 | 已有系分文档（`prd-to-design.state` / `system-analysis` / `review.md` / `dev-plan` / `alignment`）+ `开发` / `写代码` / `实现` / `落地` | `design-to-code`（#2） |
 | 仅 PRD + `写代码` / `开发` / `实现` + `个人需求` / `小需求` / `小工具` / `内部工具` / `POC` / `原型` / `快速实现` / `不要系分` / `跳过系分` | `prd-to-code`（#3） |
 | 仅 PRD + 无场景信号（只说"做一下"/"开始"） | **三方都反问，统一话术见下** |

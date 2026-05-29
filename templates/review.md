@@ -13,7 +13,7 @@
 - [ ] 现状证据与改造结论一致
 - [ ] 方案选择与正文一致
 - [ ] 命名约束（类名/方法名/API）全链路一致
-- [ ] 全部图为 PlantUML 且语义一致
+- [ ] 全部图为 Mermaid 且语义一致
 - [ ] 接口/数据库/非功能形成闭环
 - [ ] 字段/类型演进具备“兼容策略 + 回归验证”闭环
 - [ ] 大 PRD 追踪映射完整
@@ -42,7 +42,7 @@
 - [ ] Baseline evidence matches change conclusions
 - [ ] Selected option matches final documents
 - [ ] Naming constraints (class/method/API) are consistent end-to-end
-- [ ] All diagrams are PlantUML and semantically correct
+- [ ] All diagrams are Mermaid and semantically correct
 - [ ] API/DB/NFR design forms a closed loop
 - [ ] Field/type evolution has a closed loop: compatibility + regression validation
 - [ ] PRD-to-section traceability is complete (for large PRD)

@@ -19,7 +19,7 @@
 
 ## 成文约束确认
 - 模板章节顺序固定：概述 -> 方案设计 -> 数据库设计 -> 接口设计 -> 非功能性设计 -> 其他
-- 图语法：PlantUML
+- 图语法：Mermaid
 - 未知项：待确认（原因）
 - 命名一致性：与 PLAN 选定命名保持一致
 
@@ -49,7 +49,7 @@
 
 ## Drafting Constraints
 - Fixed chapter order: Overview -> Solution Design -> Database Design -> API Design -> Non-functional Design -> Others
-- Diagram syntax: PlantUML
+- Diagram syntax: Mermaid
 - Unknowns: TBD (with reason)
 - Naming consistency: must match selected PLAN naming
 
