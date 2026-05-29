@@ -1,0 +1,25 @@
+SKILL.md
+  s_714bf16d389fb1::t_ec4b31fb4f3c94 165-186
+  s_714bf16d389fb1::t_789804c99fd3e1 288
+  s_714bf16d389fb1::t_bda31403e880a8 324
+README.md
+  s_714bf16d389fb1::t_e75c4bfde7b909 113
+  s_714bf16d389fb1::t_f524c82a3a1f7a 131
+  s_714bf16d389fb1::t_c3bf94d36b31b7 80-81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "3350cbb701c39e659958f4be2d4da6b9760aaa38",
+  "prompts": {},
+  "sessions": {
+    "s_714bf16d389fb1": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "f6be2b9a-a982-4413-abb8-c05491d431b4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "lzwcyd <lzwcyd@users.noreply.github.com>"
+    }
+  }
+}
