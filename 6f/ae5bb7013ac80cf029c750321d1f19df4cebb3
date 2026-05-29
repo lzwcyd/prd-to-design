@@ -1,0 +1,19 @@
+SKILL.md
+  s_c973d39471b3ae::t_83b6eaf26ef1c6 4-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "6fae5bb7013ac80cf029c750321d1f19df4cebb3",
+  "prompts": {},
+  "sessions": {
+    "s_c973d39471b3ae": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "326e3370-4e03-4d51-9cb8-8cf9c52c6cee",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "lzwcyd <lzwcyd@users.noreply.github.com>"
+    }
+  }
+}
