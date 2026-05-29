@@ -1,14 +1,12 @@
 ---
 name: prd-to-design
 description: >-
-  Generate 系分文档 / system design docs, including PlantUML when needed, from a
-  PRD through the SDD state machine CONTEXT_SCAN -> SPEC -> SPLIT ->
-  IMPACT_SCAN -> PLAN -> DOC -> REVIEW. Use when the user has a PRD and asks
-  for 系分、系统分析、方案设计、架构设计、概要/详细/接口设计、按模板成文、A/B 方案、
-  多系统/上下游影响、评审流程、PlantUML 图、字段/类型新增、历史兼容、工程画像、
-  工程现状或仓库摸底. Do not use for direct PRD-to-code work or when the user
-  already has a finished design doc and wants implementation; ask to choose 系分,
-  直接代码, or 已有系分写代码 when intent is ambiguous.
+  Turn a PRD into 系分文档 / system design docs (with PlantUML) via the SDD flow
+  CONTEXT_SCAN -> SPEC -> SPLIT -> IMPACT_SCAN -> PLAN -> DOC -> REVIEW. Use when
+  a PRD needs 系分、系统分析、方案设计、架构设计、概要/详细/接口设计、按模板成文、
+  A/B 方案、多系统/上下游影响、评审流程、PlantUML 图、字段/类型新增、历史兼容、
+  工程画像/现状、仓库摸底. Not for direct PRD-to-code, or when a finished design
+  doc should drive implementation; if ambiguous, ask: 系分 / 直接代码 / 已有系分写代码.
 ---
 
 # PRD to 系分（SDD 状态机版）
