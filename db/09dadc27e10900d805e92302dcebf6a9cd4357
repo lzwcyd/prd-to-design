@@ -1,0 +1,40 @@
+templates/zh-CN.md
+  s_c973d39471b3ae::t_800572b5865e95 125
+doc.md
+  s_c973d39471b3ae::t_e2ec90c08dd608 40
+README.md
+  s_c973d39471b3ae::t_a399777d766a0a 28
+review.md
+  s_c973d39471b3ae::t_61cf10eb45936c 28
+plan.md
+  s_c973d39471b3ae::t_23982270d791fb 33
+impact-scan.md
+  s_c973d39471b3ae::t_5322203c17654c 46
+SKILL.md
+  s_c973d39471b3ae::t_7fe412b9711c7e 37,108,110,131,142,153,250,400,407,415,448
+  s_c973d39471b3ae::t_41fed1595b9118 86
+split.md
+  s_c973d39471b3ae::t_92b4545625c285 32
+context-scan.md
+  s_c973d39471b3ae::t_b27e78010638f7 36
+templates/en.md
+  s_c973d39471b3ae::t_ecd7060a1a9b20 125
+spec.md
+  s_c973d39471b3ae::t_e3a9b1143662db 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "db09dadc27e10900d805e92302dcebf6a9cd4357",
+  "prompts": {},
+  "sessions": {
+    "s_c973d39471b3ae": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "326e3370-4e03-4d51-9cb8-8cf9c52c6cee",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "lzwcyd <lzwcyd@users.noreply.github.com>"
+    }
+  }
+}
