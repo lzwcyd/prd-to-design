@@ -162,6 +162,28 @@ description: >-
 - `stale`：需求纠偏回退时置 `true`（等价 `stale_due_to_spec_change`），表示该产物待重生成。
 - `final_docs`：最终正文数组，每项结构同 `artifacts.<phase>`（含 `path` / `content_sha256` / `written_at` / `source`）。
 
+## Skill self-update check（启动版本自检）
+
+本 skill 以 git 仓库形式分发（通常经软链接挂载到 `~/.cursor/skills/` 或 `~/.claude/skills/`）。每个会话**仅在首次进入 `INIT` 时执行一次** `UPDATE_CHECKING`：只读地检测远程分支是否领先本地，若本地落后则提示用户手动拉取最新版本。**只检测、不自动拉取、不改动任何文件。**
+
+1. 定位 `skill_dir`：本 `SKILL.md` 所在目录（若为软链接，`git` 会自动解析到真实仓库）。
+2. 静默执行下列命令，**任一步失败即跳过自检**（不报错、不阻塞主流程、不打断用户）：
+
+   ```bash
+   git -C "<skill_dir>" rev-parse --is-inside-work-tree         # 非 git 仓库 -> 跳过
+   git -C "<skill_dir>" fetch --quiet                           # 无网络 / 无 remote -> 跳过
+   git -C "<skill_dir>" rev-list --left-right --count @...@{u}  # 输出两列：ahead behind
+   ```
+
+3. 判定与提示：
+   - `behind > 0`（本地落后远程）→ 输出「Skill 更新提示」，告知落后提交数并给出手动更新命令，是否更新由用户决定：
+     - `zh-CN`：检测到 `prd-to-design` 有新版本（本地落后远程 {behind} 个提交）。建议手动更新：`git -C "<skill_dir>" pull --ff-only`；更新后请重新触发本 skill 生效，本次会话仍使用当前版本。
+     - `en`：A newer version of `prd-to-design` is available ({behind} commit(s) behind). Update manually: `git -C "<skill_dir>" pull --ff-only`, then re-trigger the skill. The current session keeps the existing version.
+   - `behind = 0`（已是最新）→ 不输出更新提示，不打扰用户。
+   - 无 upstream / detached HEAD / fetch 失败 / 非 git 仓库 → 静默跳过。
+4. **绝不自动执行 `git pull`**：避免会话进行中变更 skill 文件导致行为不一致。
+5. 自检结果可写入状态文件（如 `prd-to-design.state.<lang>.json` 的 `update_check.last_checked_at` / `update_check.behind`），**同一会话不重复 fetch**。
+
 ## Resume behavior（恢复会话）
 
 每次进入 `INIT` 时先执行恢复检查：
@@ -263,6 +285,7 @@ description: >-
 
 ```text
 [START: AUTO|CONTEXT_SCAN|SPEC|SPLIT|IMPACT_SCAN|PLAN|DOC|REVIEW]
+-> 版本自检（UPDATE_CHECKING；每会话一次，落后则提示手动更新，失败静默跳过）
 -> 入口校验
 -> 产物目录确认（仅默认目录：用户确认或改路径）
 -> 手改同步（ARTIFACT_SYNCING；每个阶段进入前都重复执行：按 content_sha256 全量比对已落盘产物）
@@ -298,6 +321,7 @@ description: >-
 | State | Meaning |
 |------|---------|
 | `INIT` | 读取输入并检查是否可恢复 |
+| `UPDATE_CHECKING` | 启动版本自检（每会话一次）：`fetch` 后比对远程，落后则提示手动更新；非 git/无网络/无 upstream 静默跳过 |
 | `ARTIFACT_DIR_CONFIRMING` | 默认产物目录确认（仅 `base_dir_source=default`，确认或改路径） |
 | `ENTRY_VALIDATING` | 校验阶段跳转前置条件 |
 | `ARTIFACT_SYNCING` | 每个阶段进入前按 `content_sha256` 全量比对已落盘产物，命中手改则接管（adopt/merge/regenerate） |

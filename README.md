@@ -77,7 +77,8 @@
 
 ```mermaid
 flowchart LR
-    init[INIT] --> sync[ARTIFACT_SYNCING]
+    init[INIT] --> update[UPDATE_CHECKING]
+    update --> sync[ARTIFACT_SYNCING]
     sync -. 每阶段前重复 .-> sync
     sync --> contextScan[CONTEXT_SCAN]
     contextScan --> spec[SPEC]
@@ -109,6 +110,7 @@ flowchart LR
 | State | 含义 |
 |-------|------|
 | `INIT` | 读取输入并检查可恢复 |
+| `UPDATE_CHECKING` | 启动版本自检（每会话一次）：落后远程则提示手动更新；非 git/无网络/无 upstream 静默跳过 |
 | `ARTIFACT_DIR_CONFIRMING` | 默认产物目录确认（仅缺省路径，确认或改路径） |
 | `ENTRY_VALIDATING` | 校验阶段跳转前置 |
 | `ARTIFACT_SYNCING` | 每阶段进入前按 `content_sha256` 全量比对已落盘产物，命中手改则接管（adopt/merge/regenerate） |
@@ -126,6 +128,7 @@ flowchart LR
 
 ### 特殊行为
 
+- **Skill 版本自检**：每个会话首次进入 `INIT` 时执行一次 `UPDATE_CHECKING`，`git fetch` 后比对远程；本地落后时提示手动 `git pull --ff-only` 更新（只读检测、不自动拉取、失败静默跳过）。
 - **默认产物目录确认**：当 `base_dir` 走缺省默认（未显式指定 `artifact_dir` / `SDD_ARTIFACT_DIR`）时，落盘前先经用户确认或改路径；确认前不创建目录、不写入任何中间产物。
 - **手改同步**：`manual_edit_mode=on` 时，每阶段前进入 `ARTIFACT_SYNCING`，按 `content_sha256` 对所有已落盘产物做手改检测；命中变化提示 `adopt` / `merge` / `regenerate`。
 - **需求纠偏回退**：当用户出现"理解错误 / 回溯 / 改需求 / 范围变更"等信号，识别受影响最早阶段（通常 `SPEC` 或 `SPLIT`），下游产物标记 `stale_due_to_spec_change` 并按新基线重生。
