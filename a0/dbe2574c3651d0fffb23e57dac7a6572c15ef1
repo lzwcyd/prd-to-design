@@ -1,0 +1,32 @@
+examples.md
+  s_714bf16d389fb1::t_fceddd022e7b59 35,37,39,43,82,84,86,90,149,151,153
+README.md
+  s_714bf16d389fb1::t_08aaf8b2dfb1f4 38
+templates/review.md
+  s_714bf16d389fb1::t_bc68c8665c8bfb 16,45
+templates/doc.md
+  s_714bf16d389fb1::t_d30d416a24a0de 22,52
+review.md
+  s_714bf16d389fb1::t_5f005df39cf2ae 17
+SKILL.md
+  s_714bf16d389fb1::t_eb25b8d654409c 4,7,420,429,446
+  s_714bf16d389fb1::t_a549c0eb8cba26 289
+doc.md
+  s_714bf16d389fb1::t_9ca5c38f1fb2a4 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "a0dbe2574c3651d0fffb23e57dac7a6572c15ef1",
+  "prompts": {},
+  "sessions": {
+    "s_714bf16d389fb1": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "f6be2b9a-a982-4413-abb8-c05491d431b4",
+        "model": "composer-2.5"
+      },
+      "human_author": "lzwcyd <lzwcyd@users.noreply.github.com>"
+    }
+  }
+}
