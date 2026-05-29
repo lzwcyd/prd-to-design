@@ -1,0 +1,35 @@
+README.md
+  s_c973d39471b3ae::t_974ede6a586647 109
+  s_c973d39471b3ae::t_ffe85e2e4d42df 126
+  s_c973d39471b3ae::t_f8b98f3dd72b6d 5
+  s_c973d39471b3ae::t_5d134f9ec97a6c 34
+templates/en.md
+  s_c973d39471b3ae::t_e2b72055027d58 59-76
+templates/zh-CN.md
+  s_c973d39471b3ae::t_bc700c2fec049b 59-76
+SKILL.md
+  s_c973d39471b3ae::t_43dbd4f555578d 262
+  s_c973d39471b3ae::t_d2ca701d9be411 235
+  s_c973d39471b3ae::t_f0db2124a4ad81 100-111
+  s_c973d39471b3ae::t_b53e3c4aa50217 83-85
+  s_c973d39471b3ae::t_c2c5e5d002f9a6 294
+  s_c973d39471b3ae::t_e3fd0649dcafee 119
+  s_c973d39471b3ae::t_61f2c85bd2062d 269
+  s_c973d39471b3ae::t_7a2cc7b6a5f061 146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "2c4bdbbee42f03d64ca956935f16121cbf11173a",
+  "prompts": {},
+  "sessions": {
+    "s_c973d39471b3ae": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "326e3370-4e03-4d51-9cb8-8cf9c52c6cee",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "lzwcyd <lzwcyd@users.noreply.github.com>"
+    }
+  }
+}
