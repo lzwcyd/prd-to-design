@@ -122,7 +122,7 @@ Please choose:
 - `impact.en.md`
 - `plan.en.md`
 - `review.en.md`
-- `analysis.state.en.json`
+- `prd-to-design.state.en.json`
 
 ## Stage Skeleton Templates
 

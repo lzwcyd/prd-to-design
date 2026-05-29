@@ -29,7 +29,7 @@
 
 1. 按当前 `lang` 使用 `templates/split.md` 对应语言骨架组织输出。
 2. 写入 `artifact_root/split.<lang>.md`。
-3. 更新 `artifact_root/analysis.state.<lang>.json`（至少包含 `artifacts.split`）。
+3. 更新 `artifact_root/prd-to-design.state.<lang>.json`（至少包含 `artifacts.split`）。
 
 ## 最小校验清单
 

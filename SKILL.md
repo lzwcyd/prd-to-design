@@ -34,7 +34,7 @@ description: >-
 
 - 分阶段中间文档：`context/spec/split/impact/plan/review`
 - 最终系分文档（按模板，支持多系统多文档）
-- 可恢复状态文件：`analysis.state.<lang>.json`
+- 可恢复状态文件：`prd-to-design.state.<lang>.json`
 - 可选交付物：`system-analysis.<lang>.docx/.doc`（仅在用户明确要求时导出）
 
 ## Language mode
@@ -83,7 +83,7 @@ description: >-
 2. **默认（缺省）**：`base_dir = <parent_dir>/prd-to-design`，标记 `base_dir_source=default`
    - ⚠️ 该路径由系统推导得出，**非用户显式指定**：必须先通过 Step 4「默认目录确认门禁」，由用户确认沿用或改路径后，才能创建目录与落盘
    - 若该路径不存在，需在用户确认后再自动创建
-   - 若该路径已存在但属于另一 skill（含 `dev.state.<lang>.json` / `sdd.state.<lang>.json` 等他 skill 独占产物），必须告警并要求用户决策
+   - 若该路径已存在但属于另一 skill（含 `design-to-code.state.<lang>.json` / `prd-to-code.state.<lang>.json` 等他 skill 独占产物），必须告警并要求用户决策
 
 ### Step 3: `session_id` 与最终目录
 
@@ -105,9 +105,9 @@ description: >-
 2. 用户响应：
    - 「确认」/「OK」/「继续」-> 沿用默认 `artifact_root`，置 `artifact_dir_confirmed=true` 后进入后续阶段。
    - 直接给出新路径 -> 将其按显式指定处理（整体替换 `base_dir`，**不**追加 skill 名），重算 `artifact_root` 并回显一次，再置 `artifact_dir_confirmed=true`。
-3. **确认前不得创建目录、不得写入任何中间产物**（含 `analysis.state.<lang>.json` 自身）。
+3. **确认前不得创建目录、不得写入任何中间产物**（含 `prd-to-design.state.<lang>.json` 自身）。
 4. 当 `base_dir_source` 为 `artifact_dir` / `SDD_ARTIFACT_DIR`（显式指定）时，跳过本门禁，视为用户已决定路径，仅在 Echo & audit 回显。
-5. 确认结果写入 `analysis.state.<lang>.json`（`artifact_dir_confirmed=true` 与最终 `artifact_root`）；Resume 时若已确认过则不再重复询问。
+5. 确认结果写入 `prd-to-design.state.<lang>.json`（`artifact_dir_confirmed=true` 与最终 `artifact_root`）；Resume 时若已确认过则不再重复询问。
 
 ### Echo & audit（每轮 INIT 必须回显）
 
@@ -128,7 +128,7 @@ description: >-
 - `impact.<lang>.md`（PRD 范围内深扫与历史影响评估）
 - `plan.<lang>.md`
 - `review.<lang>.md`
-- `analysis.state.<lang>.json`
+- `prd-to-design.state.<lang>.json`
 
 建议最终正文命名：
 - 单文档：`system-analysis.<lang>.md`
@@ -139,7 +139,7 @@ description: >-
 每次进入 `INIT` 时先执行恢复检查：
 
 1. 基于 `base_dir + session_id` 定位 `artifact_root` 与 `lang`。
-2. 若存在 `analysis.state.<lang>.json` 或阶段文档，汇总最近进度。
+2. 若存在 `prd-to-design.state.<lang>.json` 或阶段文档，汇总最近进度。
 3. 询问用户：`resume`（继续历史）或 `restart`（从头开始）。
 4. `resume`：从最近未完成阶段继续，优先复用已落盘中间文档。
 5. `restart`：保留旧文档（可时间戳备份）并重启流程。
@@ -150,7 +150,7 @@ description: >-
 起始阶段解析优先级：
 
 1. `start_phase`（用户显式指定）
-2. `analysis.state.<lang>.json` 历史状态（resume）
+2. `prd-to-design.state.<lang>.json` 历史状态（resume）
 3. 默认 `CONTEXT_SCAN`（首次会话）；存在已确认的 `context.<lang>.md` 时回落到 `SPEC`
 
 入口校验规则：
@@ -247,7 +247,7 @@ description: >-
 
 1. 默认顺序执行，可显式跳转，但必须通过入口校验。
 2. Unknowns 必须显式标记 `❓`，禁止静默假设。
-3. 每阶段完成必须落盘并更新 `analysis.state.<lang>.json`。
+3. 每阶段完成必须落盘并更新 `prd-to-design.state.<lang>.json`。
 4. `PLAN` 阶段必须给至少两案（A/B）并等待用户选择。
 5. 用户未明确选项前，不得进入 `DOC`。
 6. 未经最终确认，不得进入 `DOC` 按模板生成正文。
@@ -397,14 +397,14 @@ Cursor 通过 frontmatter 的 `description` 决定是否激活本 skill。下表
 | 制图 | `PlantUML`、`组件图`、`时序图`、`ER 图`、`类图`、`状态图` |
 | 演进 | `字段新增`、`类型新增`、`历史兼容`、`兼容处理`、`迁移策略`、`命名规范` |
 | 参数 | `start_phase`、`manual_edit_mode`、`session_id`、`artifact_dir`、`template_path`、`historical_docs_dir`、`export_format` |
-| **独占产物**（不与他 skill 撞名） | `split.<lang>.md`、`review.<lang>.md`、`analysis.state.<lang>.json`、`system-analysis.<lang>.md`、`impact.<lang>.md`、`系分模版.md` |
+| **独占产物**（不与他 skill 撞名） | `split.<lang>.md`、`review.<lang>.md`、`prd-to-design.state.<lang>.json`、`system-analysis.<lang>.md`、`impact.<lang>.md`、`系分模版.md` |
 | **共享产物**（与并列 skill 同名，按 skill 子目录区分） | `context.<lang>.md` |
 | 操作 | `按模板输出`、`成文`、`导出 doc/docx`、`继续历史` / `resume`、`restart`、`adopt` / `merge` / `regenerate`、`需求纠偏` / `回溯` / `理解错误` |
 
 ### Do NOT trigger（应避让）
 
 - 用户只有 PRD 且明确要 **直接写代码 / 个人需求 / 小工具 / 原型 / POC / 跳过系分** → 让 [`prd-to-code`](../prd-to-code/SKILL.md) 接管
-- 用户已有系分文档（`analysis.state` / `system-analysis` / `review.md`）且要 **基于系分写代码 / 开发 / 实现** → 让 [`design-to-code`](../design-to-code/SKILL.md) 接管
+- 用户已有系分文档（`prd-to-design.state` / `system-analysis` / `review.md`）且要 **基于系分写代码 / 开发 / 实现** → 让 [`design-to-code`](../design-to-code/SKILL.md) 接管
 - 单纯 PRD 解读、撰写、评审，未要求出系分文档 → 不触发
 
 ### Disambiguation（互斥分发协议 · 三 skill 一致）
@@ -412,7 +412,7 @@ Cursor 通过 frontmatter 的 `description` 决定是否激活本 skill。下表
 | 用户输入特征 | 路由 |
 |--------------|------|
 | 仅 PRD + `系分` / `系统分析` / `PlantUML` / `方案设计` / `架构设计` / `概要设计` / `详细设计` / `接口设计` / `A B 方案` / `多系统` / `走流程` / `评审` | **本 skill（#1）** |
-| 已有系分文档（`analysis.state` / `system-analysis` / `review.md` / `dev-plan` / `alignment`）+ `开发` / `写代码` / `实现` / `落地` | `design-to-code`（#2） |
+| 已有系分文档（`prd-to-design.state` / `system-analysis` / `review.md` / `dev-plan` / `alignment`）+ `开发` / `写代码` / `实现` / `落地` | `design-to-code`（#2） |
 | 仅 PRD + `写代码` / `开发` / `实现` + `个人需求` / `小需求` / `小工具` / `内部工具` / `POC` / `原型` / `快速实现` / `不要系分` / `跳过系分` | `prd-to-code`（#3） |
 | 仅 PRD + 无场景信号（只说"做一下"/"开始"） | **三方都反问，统一话术见下** |
 
@@ -445,7 +445,7 @@ LLM 路由判断锚点。**新增触发场景前，先在此处加一条正/反�
 | "`@prd.md` 帮我把这个小工具实现一下" | `prd-to-code`（个人小工具，跳过系分） |
 | "这是产品需求，帮我直接写代码就行" | `prd-to-code` |
 | "PRD 在这里，研发自己用，POC 一下" | `prd-to-code` |
-| "`@analysis.state.zh-CN.json` 系分确认了，开始开发" | `design-to-code` |
+| "`@prd-to-design.state.zh-CN.json` 系分确认了，开始开发" | `design-to-code` |
 | "`@review.zh-CN.md` 已经评审完了，按这个开始 coding" | `design-to-code` |
 | "`@dev-plan.zh-CN.md` 这版 dev plan 我看一下" | `design-to-code`（涉及它的独占产物） |
 | "把这份 PRD 解读一下给我听" | 不触发任何 SDD skill（无下游产出意图） |

@@ -122,7 +122,7 @@
 - `impact.zh-CN.md`
 - `plan.zh-CN.md`
 - `review.zh-CN.md`
-- `analysis.state.zh-CN.json`
+- `prd-to-design.state.zh-CN.json`
 
 ## 阶段骨架模板
 

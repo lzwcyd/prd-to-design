@@ -19,7 +19,7 @@
 
 1. 按当前 `lang` 使用 `templates/spec.md` 对应语言骨架组织输出。
 2. 写入 `artifact_root/spec.<lang>.md`。
-3. 更新 `artifact_root/analysis.state.<lang>.json`（至少包含 `current_state`、`last_updated`、`artifacts.spec`）。
+3. 更新 `artifact_root/prd-to-design.state.<lang>.json`（至少包含 `current_state`、`last_updated`、`artifacts.spec`）。
 
 ## 最小校验清单
 

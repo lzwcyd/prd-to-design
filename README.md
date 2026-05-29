@@ -25,7 +25,7 @@
 
 - 默认模板：`templates/系分模版.md`
 - 分阶段：`CONTEXT_SCAN -> SPEC -> SPLIT -> IMPACT_SCAN -> PLAN -> DOC -> REVIEW`
-- 中间产物必须落盘：`context/spec/split/impact/plan/review` + `analysis.state.<lang>.json`
+- 中间产物必须落盘：`context/spec/split/impact/plan/review` + `prd-to-design.state.<lang>.json`
 - 默认产物目录：`<base_dir>/<session_id>/`，其中 `base_dir` 解析规则（避免与并列 skill `prd-to-code`、`design-to-code` 冲突）：
   1. 显式指定 `artifact_dir`（或环境变量 `SDD_ARTIFACT_DIR`）— 最高，按用户指定路径整体替换
   2. 缺省默认：`<parent_dir>/prd-to-design/`
