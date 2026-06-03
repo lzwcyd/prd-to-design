@@ -1,0 +1,38 @@
+SKILL.md
+  s_b4ab46d9ece7d3::t_7a7074cab45244 312
+  s_b4ab46d9ece7d3::t_9648876d0b04ec 318
+templates/review.md
+  s_b4ab46d9ece7d3::t_50976fbf22c926 54-57
+  s_b4ab46d9ece7d3::t_a6197a096849a9 21-24
+doc.md
+  s_b4ab46d9ece7d3::t_98e996e9a45f06 35-51
+  s_b4ab46d9ece7d3::t_193b7882dde117 25,27
+templates/系分模版.md
+  s_b4ab46d9ece7d3::t_92b056b6dd98d0 9-22
+  s_b4ab46d9ece7d3::t_dd4882ecad3d89 61-72,76
+  s_b4ab46d9ece7d3::t_ca3250c86289f3 33-38,41
+  s_b4ab46d9ece7d3::t_8e17b376a497ed 136-139
+templates/doc.md
+  s_b4ab46d9ece7d3::t_5d07ed8fad58d7 22,25-27
+  s_b4ab46d9ece7d3::t_96ea94e74d730b 55,58-60
+README.md
+  s_b4ab46d9ece7d3::t_f53d96a97e9bc5 38-39
+review.md
+  s_b4ab46d9ece7d3::t_8e233fcdf9dd34 22-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "10129b2a6eaeeff50db3e32c9d070f128c77da24",
+  "prompts": {},
+  "sessions": {
+    "s_b4ab46d9ece7d3": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "321a3c15-7631-4072-afdb-6570e1af46ff",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "lzwcyd <lzwcyd@users.noreply.github.com>"
+    }
+  }
+}
