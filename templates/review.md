@@ -18,6 +18,10 @@
 - [ ] 字段/类型演进具备“兼容策略 + 回归验证”闭环
 - [ ] 大 PRD 追踪映射完整
 - [ ] 多文档联调边界完整
+- [ ] 概述含核心结论 + 改动量表 + 术语↔代码映射(带证据)
+- [ ] 关键结论有代码证据（Class#method / path:line / 接口 / 表）
+- [ ] 图与正文聚焦本期变更并高亮改动点
+- [ ] 无裹脚布注水（同一约束只说一次）/ 敢留白（N/A 简洁处理）
 
 ## 缺口与建议
 | 编号 | 缺口描述 | 影响范围 | 建议修订 |
@@ -47,6 +51,10 @@
 - [ ] Field/type evolution has a closed loop: compatibility + regression validation
 - [ ] PRD-to-section traceability is complete (for large PRD)
 - [ ] Cross-doc integration boundaries are complete (for multi-doc output)
+- [ ] Overview has core conclusion + change-size table + term↔code mapping (with evidence)
+- [ ] Key conclusions carry code evidence (Class#method / path:line / API / table)
+- [ ] Diagrams and prose focus on this change and highlight changed parts
+- [ ] No filler/redundancy (each rule stated once) / dares to leave N/A sections terse
 
 ## Gaps and Suggestions
 | ID | Gap Description | Impact Scope | Suggested Fix |
