@@ -11,7 +11,7 @@ description: >-
 
 # PRD to 系分（SDD 状态机版）
 
-**Version:** 2.3 · **Logical id:** `prd_to_design`
+**Version:** 2.4 · **Logical id:** `prd_to_design`
 
 ## Input
 
@@ -236,6 +236,28 @@ description: >-
 5. 若用户仅回复“ok/继续/确认”且未指定策略，默认按 `adopt` 处理，并在状态文件记录该默认行为。
 6. 若手改的是上游产物（如改了 `spec` 但当前在 `PLAN`），按"需求纠偏回退协议"评估是否需要把下游产物 `stale` 置位并重生成。
 
+## User confirmation interaction（AskUserQuestion 交互确认 · 强制）
+
+所有「需要等待用户确认/选择」的门禁点，必须通过 `AskUserQuestion` 工具（或当前运行环境的等价结构化提问工具，如 Cursor 的 `AskQuestion`）发起交互式提问收集决策，**不得**只把确认块写进文档/普通回复文本里被动等待用户自行打字。
+
+1. 适用范围（本 skill 所有等待用户输入的状态与场景）：
+   - `ARTIFACT_DIR_CONFIRMING`：选项 `confirm`（沿用默认目录，推荐）/ 用户经 Other 给新路径
+   - Resume 检查：选项 `resume` / `restart`
+   - 各阶段 `*_CONFIRMING`（CONTEXT_SCAN / SPEC / SPLIT / IMPACT_SCAN / PLAN / DOC / REVIEW）：选项 `confirm`（确认进入下一阶段）/ `revise`（提出修改意见）
+   - `PLAN` 方案选择：选项 `A` / `B`（/更多方案），不得让用户仅回自由文本
+   - `DOC_PENDING_FINAL_CONFIRM` 最终成文门禁：选项 `generate`（确认生成）/ `back`（回到指定阶段修订）
+   - 手改检测策略：选项 `adopt`（推荐）/ `merge` / `regenerate`
+   - 需求纠偏回退：选项 `rollback-regenerate`（推荐）/ `partial-continue`
+   - 阶段跳转入口校验：选项 `补齐后继续` / `回退上一阶段` / `以摘要为临时基线`
+   - ❓ 未知项澄清：凡可枚举候选答案的，逐条构造为 question 选项
+2. 提问构造要求：
+   - 每个决策点一个 question，选项 id/label 与协议语义一一对应；推荐项放第一位并在 label 末尾标注「（推荐）」
+   - 同一轮存在多个相互独立的确认点时，合并为一次多 question 调用，减少来回打断
+   - 用户经「Other」输入的自由文本，按对应协议处理（如视为修改意见、新路径、新增方案要求等）
+3. 模板中的确认块（阶段确认块 / 最终成文门禁块等）仍需输出，作为「待确认内容」的上下文摘要展示；但**决策收集必须走 AskUserQuestion**，二者配合使用而非二选一。
+4. 仅当运行环境不存在任何结构化提问工具时，才降级为纯文本确认块交互，此时沿用「Intent normalization」的简短确认语义归一规则。
+5. 用户在交互中的选择结果照常写入状态文件（如 `selected_option`、`artifact_dir_confirmed`、手改策略记录），协议其余部分不变。
+
 ## Intent normalization（简短确认语义归一）
 
 当用户仅回复简短确认词（如 `ok`/`确认`/`继续`）时，按当前等待上下文解析：
@@ -316,6 +338,7 @@ description: >-
 14. 历史样本仅用于风格与边界对齐，冲突时以当前 PRD + 现状证据为准。
 15. 使用默认（缺省）产物目录时，必须先经用户确认或由用户改路径，确认前不得落盘任何中间产物；用户显式指定 `artifact_dir` / `SDD_ARTIFACT_DIR` 时免确认。
 16. 成文必须遵循「成文风格基线（反裹脚布）」：贴代码（业务术语↔代码术语 + 证据）、要点化短句、聚焦变更（图高亮改动点）、敢留白、不注水、同一约束只说一次；详见 [doc.md](doc.md)「成文风格基线」。
+17. 所有等待用户确认/选择的门禁点，必须用 `AskUserQuestion`（或环境等价工具）发起结构化交互提问收集决策，不得仅输出文本确认块被动等待；详见「User confirmation interaction」章节。
 
 ## State machine
 
@@ -352,6 +375,8 @@ Forbidden：未通过门禁直接生成正文；检测到手改后直接覆盖�
 - Phase-jump Entry Validation Block / 阶段跳转入口校验提示块
 - Manual Edit Detected Block / 检测到人工修改提示块
 - Rollback Prompt Block / 需求纠偏回退提示块
+
+注：以上确认类块仅作「待确认内容」的上下文摘要展示；实际决策收集必须按「User confirmation interaction」章节通过 `AskUserQuestion` 交互完成。
 
 ## Phase routing（阶段路由）
 

@@ -2,6 +2,8 @@
 
 Use this file when `lang=en`. The main `SKILL.md` defines workflow rules; this file defines reusable wording blocks.
 
+> ⚠️ Interaction rule: every confirmation/choice block below is only a context summary of what needs confirming. The actual user decision MUST be collected via `AskUserQuestion` (or the runtime's equivalent structured-question tool), with options mapped 1:1 to the reply choices listed in the block and the recommended option first, labeled "(Recommended)". Never end the turn with only a text block waiting for the user to type. See "User confirmation interaction" in the main `SKILL.md`.
+
 ## Per-turn Footer
 
 ```markdown
